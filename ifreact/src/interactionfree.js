@@ -1,5 +1,5 @@
-// let zmq = require("zeromq")
-let msgpack = require("@ygoe/msgpack")
+// let msgpack = require("@ygoe/msgpack")
+let msgpack = require("./msgpack")
 let JSMQ = require("./JSMQ.js")
 
 class IFWorkerCore {
@@ -9,7 +9,6 @@ class IFWorkerCore {
     this.serviceName = serviceName
     this.serviceObject = serviceObject
     this.dealer = new JSMQ.Dealer()
-      // this.dealer.on('message', )
     this.dealer.onMessage = (this._onMessage).bind(this)
     this.waitingList = new Map()
     this.timeout = 10000
@@ -121,6 +120,8 @@ class IFWorkerCore {
           console.log("Invalid serialization: " + frame5Ser + ".");
         } else {
           let content = msgpack.deserialize(frame6Content)
+          // console.log(frame6Content)
+          // console.log(content)
           let messageType = content["Type"]
           if (messageType === "Response") {
             this._onResponse(content)
@@ -196,13 +197,13 @@ class IFWorkerCore {
   }
 }
 
-async function IFWorker(endpoint, serviceObject, serviceName) {
+function IFWorker(endpoint, serviceObject, serviceName) {
   let core = new IFWorkerCore(endpoint, serviceObject, serviceName)
-  await core.connect()
+  core.connect()
   if (serviceName) {
-    await core.request('', 'registerAsService', serviceName)
+    core.request('', 'registerAsService', serviceName)
   }
-  let p = await core._createProxy('')
+  let p = core._createProxy('')
   return p
 }
 

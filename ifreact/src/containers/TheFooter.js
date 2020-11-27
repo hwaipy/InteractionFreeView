@@ -1,16 +1,23 @@
 import React from 'react'
-import { CFooter } from '@coreui/react'
+import { CFooter, CButton } from '@coreui/react'
+// import worker from './../views/service/IFWorker'
+import { PingDot } from './../views/service/Ping'
 
 const TheFooter = () => {
   return (
     <CFooter fixed={false}>
-      <div>
-        <a href="https://coreui.io" target="_blank" rel="noopener noreferrer">CoreUI</a>
-        <span className="ml-1">&copy; 2020 creativeLabs.</span>
+      <div className="m-auto col-4">
+        <PingDot />
       </div>
-      <div className="mfs-auto">
-        <span className="mr-1">Powered by</span>
-        <a href="https://coreui.io/react" target="_blank" rel="noopener noreferrer">CoreUI for React</a>
+      <div className="m-auto text-center col-4">
+        <span className="text-center mb-0">Hwaipy &copy; 2020</span>
+      </div>
+      <div className="m-auto text-right col-4">
+        <div className="mfs-auto mr-1">
+          <CButton id="ButSpec" href="http://www.beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" color="link">
+            {'沪ICP备20021828号'}
+          </CButton>
+        </div>
       </div>
     </CFooter>
   )

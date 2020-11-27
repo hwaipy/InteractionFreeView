@@ -1,20 +1,42 @@
 export default [
   {
+    _tag: 'CSidebarNavItem',
+    name: 'Dashboard',
+    to: '/dashboard',
+    icon: 'cil-speedometer',
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Weather',
+    to: '/weather',
+    icon: 'cil-cloudy',
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'CodeServer',
+    to: '/codeservernav',
+    icon: 'cil-code',
+  },
+  {
+    _tag: 'CSidebarNavTitle',
+    _children: ['TF-QKD']
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'TDCViewer',
+    to: '/lab/tfqkd/tdcviewer',
+    icon: 'cil-graph',
+  },
+
+
+
+
+  {
     _tag: 'CSidebarNavDropdown',
     name: 'Examples',
     route: '',
     icon: 'cil-puzzle',
     _children: [
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Dashboard',
-        to: '/dashboard',
-        icon: 'cil-speedometer',
-        badge: {
-          color: 'info',
-          text: 'NEW',
-        }
-      },
       {
         _tag: 'CSidebarNavTitle',
         _children: ['Theme']

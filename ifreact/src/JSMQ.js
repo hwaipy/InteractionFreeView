@@ -228,6 +228,9 @@ const Dealer = function() {
     var endpoints = [];
     var current = 0;
     var isActive = false;
+    var connected = false;
+    var messageQueue = [];
+    var maxQueueSize = 10
 
     var that = new SocketBase(xattachEndpoint, xendpointTerminated, xhasOut, xsend, xonMessage);
 
@@ -245,6 +248,10 @@ const Dealer = function() {
                 writeActivated();
             }
         }
+        connected = true
+        while (messageQueue.length > 0 && connected) {
+            xsend(messageQueue.shift())
+        }
     }
 
     function xendpointTerminated(endpoint) {
@@ -253,6 +260,7 @@ const Dealer = function() {
             current = 0;
         }
         endpoints.splice(index, 1);
+        connected = false
     }
 
     function xhasOut() {
@@ -261,6 +269,10 @@ const Dealer = function() {
     }
 
     function xsend(message) {
+        if (!connected) {
+            if (messageQueue.length < maxQueueSize) messageQueue.push(message)
+            return false
+        }
         if (endpoints.length === 0) {
             isActive = false;
             return false;
@@ -304,5 +316,6 @@ StringUtility.Uint8ArrayToString = function(buffer) {
 }
 
 module.exports = {
-    Dealer, Message
+    Dealer,
+    Message
 }
