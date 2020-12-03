@@ -1,27 +1,28 @@
 import React from 'react'
-import IFWorkerInstance from "../../../service/IFWorker"
-import { TDCStorageStreamFetcher } from "../../../../lib/IFExp"
+import IFWorkerInstance from "../../service/IFWorker"
+import { TDCStorageStreamFetcher, linspace, Histogram } from "../../../lib/IFExp"
 import _ from 'lodash'
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
-import CardActions from '@material-ui/core/CardActions';
+// import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader'
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
+// import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+// import TextField from '@material-ui/core/TextField';
+import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+// import Paper from '@material-ui/core/Paper';
+// import ButtonBase from '@material-ui/core/ButtonBase';
+import ResizablePlotly from '../components/ResizablePlotly'
+import CounterField from '../components/CounterField'
+import InformationField from '../components/InformationField'
 
-// import {
-//   CCard,
-//   CCardBody,
-//   CCardHeader,
-//   CCol,
-//   CRow,
-// } from '@coreui/react'
-
-const worker = IFWorkerInstance(false)
+const worker = IFWorkerInstance()
 // var parameterString = window.location.search
 // var parameters = {}
 // if (parameterString.length > 0) {
@@ -33,7 +34,7 @@ const worker = IFWorkerInstance(false)
 // }
 // tdcService = parameters['tdcservice'] || null
 // collection = parameters['collection'] || null
-const collection = 'TDCServerTestCollection' //TFQKD_TDC
+const collection = 'TDCServerTestCollection' //'TFQKD_TDC'
 
 //   if (tdcService != null) {
 //     collection = await worker[tdcService].getStoraCollectionName()
@@ -46,116 +47,110 @@ function listener() {
   console.log('listener')
 }
 
-function CounterField(props) {
-  const useStyles = makeStyles({
-    root: {
-      minWidth: 275,
-    },
-    bullet: {
-      display: 'inline-block',
-      margin: '0 2px',
-      transform: 'scale(0.8)',
-    },
-    title: {
-      fontSize: 14,
-    },
-    pos: {
-      marginBottom: 12,
-    },
-  });
+const cardStyles = makeStyles({
+  root: {
+    backgroundColor: "#F7F7F7",
+  },
+});
 
-  console.log(props)
-  const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
-  let channelNumStr = props.channel.toString()
-  if (channelNumStr.length === 1) channelNumStr = "0" + channelNumStr
+function CounterCard(props) {
   return (
-    <Paper className={classes.root}>
-      {/* <CardContent> */}
-      {/* 
-        <Typography className={classes.title} color="textSecondary" gutterBottom>
-          Word of the Day
-        </Typography>
-        <Typography variant="h5" component="h2">
-          be{bull}nev{bull}o{bull}lent
-        </Typography>
-        <Typography className={classes.pos} color="textSecondary">
-          adjective
-        </Typography>
-        <Typography variant="body2" component="p">
-          well meaning and kindly.
-          <br />
-          {'"a benevolent smile"'}
-        </Typography> */}
-
-      {/* <Grid item xs={3} sm container> */}
-      {/* 123 */}
-      {/* <Grid item xs container direction="column" spacing={2}>
-              CH 01
-          </Grid>
-          <Grid item>
-            <Typography variant="subtitle1">$19.00</Typography>
-          </Grid> */}
-      {/* </Grid> */}
-
-      <Grid container spacing={0}>
-        <Grid item xs>
-          {'CH' + channelNumStr}
+    <Card className={cardStyles().root} variant="outlined">
+      <CardHeader title='Channels' />
+      <CardContent>
+        <Grid container spacing={1}>
+          {
+            _.range(props.counts.length).map(i =>
+              <Grid item xs={12} key={'' + i}>
+                <CounterField channel={i} count={props.counts[i]} delay={props.delays[i]}></CounterField>
+              </Grid>
+            )
+          }
         </Grid>
-        <Grid item xs={6}>
-          <TextField id="outlined-search" variant="outlined" />
-        </Grid>
-        <Grid item xs>
-          3
-          </Grid>
-      </Grid>
-      {/* </CardContent> */}
-    </Paper>
+      </CardContent>
+    </Card>
   );
 }
 
-// function App(props) {
-//   let figData = props['weatherData']
-//   let figDataMap = {}
-//   figData.forEach(d => { figDataMap[d['LocationAbbr']] = d })
-//   let fetchedAbbrs = figData.map(d => { return d['LocationAbbr'] })
-//   let orderedAbbr = defaultOrder.filter(abbr => { return fetchedAbbrs.includes(abbr) }).concat(fetchedAbbrs.filter(abbr => { return !defaultOrder.includes(abbr) }))
-//   return (
-//     <>
-//       <CRow>
-//         {
-//           orderedAbbr.map(abbr => { return figDataMap[abbr] }).filter(fig => { return fig['Content'] }).map((fig) => {
-//             let imgData = fig['Content']
-//             let base64 = Base64.fromUint8Array(imgData)
-//             return (
-//               <CCol xs="12" sm="6" md="4" key={fig['LocationAbbr']}>
-//                 <CCard>
-//                   <CCardHeader>
-//                     {fig['Location']}
-//                     {/* <div className="card-header-actions">
-//                       <CLink className="card-header-action">
-//                         <CIcon name="cil-settings" />
-//                       </CLink>
-//                       <CLink className="card-header-action" onClick={() => hehe()}>
-//                         <CIcon name='cil-chevron-bottom' />
-//                       </CLink>
-//                       <CLink className="card-header-action" onClick={() => hehe()}>
-//                         <CIcon name="cil-x-circle" />
-//                       </CLink>
-//                     </div> */}
-//                   </CCardHeader>
-//                   <CCardBody className="p-0">
-//                     <Image src={`data:image/png;base64,${base64}`} aspectRatio={2.5217391304} id={'IMG_' + fig['LocationAbbr']} />
-//                   </CCardBody>
-//                 </CCard>
-//               </CCol>
-//             )
-//           })
-//         }
-//       </CRow>
-//     </>
-//   );
-// }
+class HistogramCard extends React.Component {
+  constructor(props) {
+    super(props)
+    this.histograms = {}
+  }
+
+  render() {
+    var layout = {
+      xaxis: { title: 'Time (ns)' },
+      yaxis: { title: 'Count' },
+      margin: { l: 50, r: 30, b: 50, t: 30, pad: 4 },
+    }
+    layout['updatemenus'] = [
+      {
+        buttons: [
+          { args: ['yaxis.type', 'linear'], label: 'Linear', method: 'relayout' },
+          { args: ['yaxis.type', 'log'], label: 'Log', method: 'relayout' }
+        ],
+        direction: 'left', pad: { 'r': 10, 't': 10 }, showactive: true, type: 'buttons', x: 0.1, xanchor: 'left', y: 1.1, yanchor: 'top'
+      }
+    ]
+
+    // // get current layout status: linear or log
+    // var gd = document.getElementById('viewport')
+    // var oldLayout = gd.layout
+    // if (oldLayout && result != null) {
+    //   currentY = (gd.layout['yaxis']['type'])
+    //   layout['yaxis']['type'] = currentY
+    // }
+
+    const traces = []
+    if (this.props.histograms) {
+      const xs = linspace(this.props.from, this.props.to / this.props.divide, this.props.binNum)
+      // let histogramXsMatched = true
+      for (var i = 0; i < this.props.signals.length; i++) {
+        const channelNum = this.props.signals[i]
+        if (!this.histograms[channelNum.toString()]) this.histograms[channelNum.toString()] = new Histogram()
+        const histogram = this.histograms[channelNum]
+        if (this.props.append) histogram.append(xs, this.props.histograms[i])
+        else histogram.update(xs, this.props.histograms[i])
+        let channelNumStr = this.props.signals[i].toString()
+        if (channelNumStr.length === 1) channelNumStr = "0" + channelNumStr
+        traces.push({
+          x: histogram.xs,
+          y: histogram.ys,
+          type: 'scatter',
+          name: 'CH' + channelNumStr
+        })
+        // histogramXsMatched &= histogram.xsMatch
+      }
+      layout['uirevision'] = 'true'
+      //     listener('HistogramXsMatched', histogramXsMatched)
+    }
+    const contents = [
+      <InformationField title='Trigger' value={this.props.trigger}></InformationField>,
+      <InformationField title='Divide' value={this.props.divide}></InformationField>,
+      <InformationField title='BinNum' value={this.props.binNum}></InformationField>,
+      <InformationField title='From' value={this.props.from} tail='ns'></InformationField>,
+      <InformationField title='To' value={this.props.to} tail='ns'></InformationField>,
+    ]
+    return (
+      <Card style={{ backgroundColor: '#F7F7F7' }} variant="outlined">
+        <CardHeader title='Histogram' />
+        <CardContent>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                {_.range(contents.length).map(i => <Grid item xs={12} sm={12} md={6} lg={3} xl={2} key={'CCR' + i}>{contents[i]}</Grid>)}
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <ResizablePlotly data={traces} layout={layout}></ResizablePlotly>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+    );
+  }
+}
 
 class TDCViewer extends React.Component {
   constructor(props) {
@@ -163,7 +158,8 @@ class TDCViewer extends React.Component {
     this.state = {
       counts: [0, 0, 0, 0],
       delays: [0, 0, 0, 0],
-      isAppend: false
+      isAppend: false,
+      reviewMode: 'instant',
     };
     this.fetcher = null
   }
@@ -182,84 +178,76 @@ class TDCViewer extends React.Component {
     this.fetcher = null
   }
 
-  async doDataFetch() {
-    //     // let data = await worker.Storage.latest('Weathers', 'FetchTime', undefined, { 'RecordTime': 1, 'Data': 1 })
-    //     let data = await worker.WeatherViewer.latest()
-    //     // let recordTime = data['RecordTime']
-    //     let weatherData = data['Data']
-    //     this.setState({ weatherData: weatherData })
+  handleToggleChange(event, value) {
+    if (value) {
+      this.setState({ reviewMode: value })
+    }
   }
+
+  // function updateIntegralData() {
+  //   var beginTime = onBlurIntegralRange('input-integral-from')
+  //   var endTime = onBlurIntegralRange('input-integral-to')
+  //   invalid = $("#input-integral-from")[0].classList.contains('is-invalid') ||
+  //     $("#input-integral-to")[0].classList.contains('is-invalid')
+  //   var isToNow = $("#input-integral-to")[0].value
+  //   var isToNow = isToNow.length == 0 || isToNow.toLowerCase() == 'now'
+  //   if (!invalid) fetcher.updateIntegralData(beginTime, endTime, isToNow)
+  //   setHistogramConfigEditable(isToNow)
+  // }
+
+  // onSelectionReview(isReview) {
+  //   $("#selection-instant").attr("class", isIntegral ? "btn btn-secondary" :
+  //     "btn btn-success")
+  //   $("#selection-integral").attr("class", isIntegral ? "btn btn-success" :
+  //     "btn btn-secondary")
+  //   $("#IntegralConfig").collapse(isIntegral ? "show" : "hide")
+  //   fetcher.changeMode(isIntegral ? "Stop" : "Instant")
+  //   setHistogramConfigEditable(true)
+  // }
 
   render() {
     return (
-      //   <App weatherData={this.state.weatherData}></App>
-      <Grid container spacing={1}>
-        <Grid item xs={6} sm={3}>
-          <Grid container spacing={1}>
-            {
-              _.range(this.state.counts.length).map(i =>
-                <Grid item xs={12} key={'' + i}>
-                  <CounterField channel={i} count={this.state.counts[i]} delay={this.state.delays[i]}></CounterField>
-                </Grid>
-              )
-            }
+      <div>
+        <Box className="mb-2">
+          {/* <CButtonGroup className="mr-2">
+            <CButton color="secondary">1</CButton>
+            <CButton color="secondary">2</CButton>
+            <CButton color="secondary">3</CButton>
+            <CButton color="secondary">4</CButton>
+          </CButtonGroup> */}
+          <ToggleButtonGroup value={this.state.reviewMode} exclusive onChange={(this.handleToggleChange).bind(this)} aria-label="text alignment">
+            <ToggleButton value="instant" style={{ outline: 'none' }}>Instant</ToggleButton>
+            <ToggleButton value="review" style={{ outline: 'none' }}>Review</ToggleButton>
+          </ToggleButtonGroup>
+          <ButtonGroup value={this.state.reviewMode} exclusive onChange={(this.handleToggleChange).bind(this)} aria-label="text alignment" style={{marginLeft: 10}}>
+            <Button value="instant" style={{ outline: 'none' }}>Instant</Button>
+            <Input></Input>
+          </ButtonGroup>
+          {/* <CInputGroup classname='ml-5'>
+            <CInputGroupPrepend>
+              <CInputGroupText>@</CInputGroupText>
+            </CInputGroupPrepend>
+            <CInput placeholder="Input group example" />
+          </CInputGroup> */}
+        </Box>
+        <Grid container spacing={1}>
+          <Grid item xs={12} sm={7} md={6} lg={4} xl={3}>
+            <CounterCard counts={this.state.counts} delays={this.state.delays}></CounterCard>
+          </Grid>
+          <Grid item xs={12} sm={5} md={6} lg={8} xl={9}>
+            <HistogramCard histograms={this.state.histograms} trigger={this.state.syncChannel} signals={this.state.signalChannels} divide={this.state.divide} binNum={this.state.length} from={this.state.viewFrom} to={this.state.viewTo}></HistogramCard>
           </Grid>
         </Grid>
-      </Grid>
+      </div>
     );
   }
 
   plot(result, append) {
-    //   var layout = {
-    //     xaxis: {
-    //       title: 'Time (ns)'
-    //     },
-    //     yaxis: {
-    //       title: 'Count'
-    //     },
-    //     margin: {
-    //       l: 50,
-    //       r: 30,
-    //       b: 50,
-    //       t: 30,
-    //       pad: 4
-    //     },
-    //   }
-    //   layout['updatemenus'] = [
-    //     {
-    //         buttons: [
-    //             {
-    //                 args: ['yaxis.type', 'linear'],
-    //                 label: 'Linear',
-    //                 method: 'relayout'
-    //             },
-    //             {
-    //                 args: ['yaxis.type', 'log'],
-    //                 label:'Log',
-    //                 method:'relayout'
-    //             }
-    //         ],
-    //         direction: 'left',
-    //         pad: {'r': 10, 't': 10},
-    //         showactive: true,
-    //         type: 'buttons',
-    //         x: 0.1,
-    //         xanchor: 'left',
-    //         y: 1.1,
-    //         yanchor: 'top'
-    //     }
-    //   ]
+    console.log(result)
 
-    //   // get current layout status: linear or log
-    //   var gd = document.getElementById('viewport')
-    //   var oldLayout = gd.layout
-    //   if (oldLayout && result != null) {
-    //     currentY = (gd.layout['yaxis']['type'])
-    //     layout['yaxis']['type'] = currentY
-    //   }
-
-    //   var traces = []
+    const report = {}
     if (result == null) {
+      console.log('nullllllll')
       //     for (var i = 0; i < TDCHistograms.length; i++) {
       //       TDCHistograms[i].clear()
       //     }
@@ -276,74 +264,22 @@ class TDCViewer extends React.Component {
       //       // responsive: true
       //     })
     } else {
-      //     // Deal counts
-      // let counts = result['Data']['Counter']
-      //     for (var i = 0; i < channelCount; i++) {
-      //       $('#ChannelPane_' + i).find('.DPTC').val((counts[i] || 0).toString().replace(
-      //         /(\d)(?=(?:\d{3})+$)/g, '$1,'))
-      //     }
-      //     $('#DePTI_Ratio48').val((counts[4]/counts[8]).toFixed(3))
-      //     $('#DePTI_Ratio59').val((counts[5]/counts[9]).toFixed(3))
-
-      //     // Deal delays
-      //     if (tdcConfiger == null) {
-      //       var delays = result['Data']['Delays']
-      //       for (var i = 0; i < channelCount; i++) {
-      //         $('#ChannelPane_' + i).find('.DPTI').val(delays[i] / 1000.0)
-      //       }
-      //     }
-
-      //     var data = result['Data']['MultiHistogram']
-      //     var configuration = data['Configuration']
-      //     var histograms = data['Histograms']
-      //     var viewFrom = configuration['ViewStart'] / 1000.0;
-      //     var viewTo = configuration['ViewStop'] / 1000.0;
-      //     var divide = configuration['Divide'];
-      //     var length = configuration['BinCount'];
-      //     var syncChannel = configuration['Sync'];
-      //     var signalChannels = configuration['Signals'];
-
-      //     // Deal histogram configs
-      //     if ($('#HistoPane_Sync').find('.DPTI').attr('disabled')) {
-      //       $('#HistoPane_Sync').find('.DPTI').val(syncChannel)
-      //       $('#HistoPane_Divide').find('.DPTI').val(divide)
-      //       $('#HistoPane_BinCount').find('.DPTI').val(length)
-      //       $('#HistoPane_ViewStart').find('.DPTI').val(viewFrom)
-      //       $('#HistoPane_ViewStop').find('.DPTI').val(viewTo)
-      //     }
-
-      //     var xs = linspace(viewFrom, viewTo / divide, length)
-      //     var histogramXsMatched = true
-      //     for (var i = 0; i < signalChannels.length; i++) {
-      //       var channelNum = signalChannels[i]
-      //       histogram = TDCHistograms[channelNum]
-      //       if (append) histogram.append(xs, histograms[i])
-      //       else histogram.update(xs, histograms[i])
-      //       var channelNumStr = signalChannels[i].toString()
-      //       if (channelNumStr.length == 1) channelNumStr = "0" + channelNumStr
-      //       traces.push({
-      //         x: histogram.xs,
-      //         y: histogram.ys,
-      //         type: 'scatter',
-      //         name: 'CH' + channelNumStr
-      //       })
-      //       histogramXsMatched &= histogram.xsMatch
-      //     }
-      //     layout['uirevision'] = 'true'
-      //     listener('HistogramXsMatched', histogramXsMatched)
-
-      //     Plotly.react('viewport', traces, layout)
+      const counts = result.Data.Counter
+      report.counts = _.range(Math.max(...(Object.keys(counts).map(k => parseInt(k)).filter(n => !isNaN(n)))) + 1).map(i => counts[i])
+      report.delays = result.Data.Delays
+      const data = result.Data.MultiHistogram
+      const configuration = data.Configuration
+      report.histograms = data.Histograms
+      report.viewFrom = configuration.ViewStart / 1000.0
+      report.viewTo = configuration.ViewStop / 1000.0
+      report.divide = configuration.Divide
+      report.length = configuration.BinCount
+      report.syncChannel = configuration.Sync
+      report.signalChannels = configuration.Signals
+      report.isAppend = append
     }
-    //   Plotly.redraw('viewport')
-
-    let counts = result.Data.Counter
-    this.setState({
-      counts: _.range(Math.max(...(Object.keys(counts).map(k => parseInt(k)).filter(n => !isNaN(n)))) + 1).map(i => counts[i]),
-      delays: result.Data.Delays,
-      isAppend: append
-    })
+    this.setState(report)
   }
-
 }
 
 export default TDCViewer
@@ -585,27 +521,6 @@ export default TDCViewer
 //   worker[tdcService].configureAnalyser('MultiHistogram', {
 //     'Signals': signals
 //   })
-// }
-
-// function updateIntegralData() {
-//   var beginTime = onBlurIntegralRange('input-integral-from')
-//   var endTime = onBlurIntegralRange('input-integral-to')
-//   invalid = $("#input-integral-from")[0].classList.contains('is-invalid') ||
-//     $("#input-integral-to")[0].classList.contains('is-invalid')
-//   var isToNow = $("#input-integral-to")[0].value
-//   var isToNow = isToNow.length == 0 || isToNow.toLowerCase() == 'now'
-//   if (!invalid) fetcher.updateIntegralData(beginTime, endTime, isToNow)
-//   setHistogramConfigEditable(isToNow)
-// }
-
-// function onSelectionIntegral(isIntegral) {
-//   $("#selection-instant").attr("class", isIntegral ? "btn btn-secondary" :
-//     "btn btn-success")
-//   $("#selection-integral").attr("class", isIntegral ? "btn btn-success" :
-//     "btn btn-secondary")
-//   $("#IntegralConfig").collapse(isIntegral ? "show" : "hide")
-//   fetcher.changeMode(isIntegral ? "Stop" : "Instant")
-//   setHistogramConfigEditable(true)
 // }
 
 // function setHistogramConfigEditable(editable) {

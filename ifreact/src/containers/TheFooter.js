@@ -4,6 +4,13 @@ import { CFooter, CButton } from '@coreui/react'
 import { PingDot } from './../views/service/Ping'
 
 const TheFooter = () => {
+  const govRec = (window.location.hostname === 'interactionfree.cn') ? (
+    <div className="mfs-auto mr-1">
+      <CButton id="ButSpec" href="http://www.beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" color="link">
+        {'沪ICP备20021828号'}
+      </CButton>
+    </div>
+  ) : <p></p>
   return (
     <CFooter fixed={false}>
       <div className="m-auto col-4">
@@ -13,11 +20,7 @@ const TheFooter = () => {
         <span className="text-center mb-0">Hwaipy &copy; 2020</span>
       </div>
       <div className="m-auto text-right col-4">
-        <div className="mfs-auto mr-1">
-          <CButton id="ButSpec" href="http://www.beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" color="link">
-            {'沪ICP备20021828号'}
-          </CButton>
-        </div>
+        {govRec}
       </div>
     </CFooter>
   )

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import MUIDataTable from "mui-datatables";
 import IFWorkerInstance from "../service/IFWorker"
 
-const worker = IFWorkerInstance(true)
+const worker = IFWorkerInstance()
 
 function App(props) {
   useState("standard");

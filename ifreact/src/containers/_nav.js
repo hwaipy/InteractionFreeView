@@ -24,12 +24,44 @@ export default [
   {
     _tag: 'CSidebarNavItem',
     name: 'TDCViewer',
-    to: '/lab/tfqkd/tdcviewer',
+    to: '/lab/tfqkd/transition/tdcviewer',
+    icon: 'cil-graph',
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Encoding',
+    to: '/lab/tfqkd/transition/encoding',
+    icon: 'cil-graph',
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'DataTaking',
+    to: '/lab/tfqkd/transition/datataking',
+    icon: 'cil-graph',
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'TDCStatus',
+    to: '/lab/tfqkd/tdcstatus',
     icon: 'cil-graph',
   },
 
-
-
+  {
+    _tag: 'CSidebarNavTitle',
+    _children: ['Lab']
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'LabTDCViewer',
+    to: '/lab/tfqkd/tdcviewer',
+    icon: 'cil-graph',
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Lab',
+    to: '/lab/tfqkd/lab',
+    icon: 'cil-graph',
+  },
 
   {
     _tag: 'CSidebarNavDropdown',
