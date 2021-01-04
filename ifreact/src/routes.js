@@ -55,6 +55,7 @@ const routes = [
   { path: '/lab/tfqkd/transition/datataking', exact: true, name: 'User Details', component: React.lazy(() => import('./views/lab/transition/DataTaking')) },
   { path: '/lab/tfqkd/tdcstatus', exact: true, name: 'User Details', component: React.lazy(() => import('./views/lab/tfqkd/TDCStatus')) },
   { path: '/lab/tfqkd/lab', exact: true, name: 'User Details', component: React.lazy(() => import('./views/lab/tfqkd/Lab')) },
+  { path: '/views/components/components', exact: true, name: 'User Details', component: React.lazy(() => import('./views/components/ComponentsView')) },
 ];
 
 export default routes;

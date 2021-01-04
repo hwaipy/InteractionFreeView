@@ -62,6 +62,12 @@ export default [
     to: '/lab/tfqkd/lab',
     icon: 'cil-graph',
   },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Components',
+    to: '/views/components/components',
+    icon: 'cil-graph',
+  },
 
   {
     _tag: 'CSidebarNavDropdown',

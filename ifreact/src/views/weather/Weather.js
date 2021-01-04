@@ -12,7 +12,7 @@ import Image from 'material-ui-image'
 
 const worker = IFWorkerInstance(false)
 
-const defaultOrder = ['LJ', 'NS', 'NE', 'DLH', 'BJ', 'SH', 'MTR', 'FZ', 'JN', 'QD', 'XM', 'CC', 'WeiH', 'RUS', 'AL']
+const defaultOrder = ['LJ', 'NS', 'NE', 'DLH', 'BJ', 'SH', 'MTR', 'MO', 'ZV', 'FS', 'FZ', 'JN', 'QD', 'XM', 'CC', 'WeiH', 'AL']
 
 function App(props) {
   let figData = props['weatherData']

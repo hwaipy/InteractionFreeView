@@ -1,6 +1,6 @@
 import React from 'react'
 import IFWorkerInstance from "../../service/IFWorker"
-import ResizablePlotly from '../components/ResizablePlotly'
+import ResizablePlotly from '../../components/ResizablePlotly'
 
 const worker = IFWorkerInstance()
 const collection = 'TFQKD_TDC'

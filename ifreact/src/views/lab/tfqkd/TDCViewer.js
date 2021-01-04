@@ -18,9 +18,9 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 // import Paper from '@material-ui/core/Paper';
 // import ButtonBase from '@material-ui/core/ButtonBase';
-import ResizablePlotly from '../components/ResizablePlotly'
-import CounterField from '../components/CounterField'
-import InformationField from '../components/InformationField'
+import ResizablePlotly from '../../components/ResizablePlotly'
+import CounterField from '../../components/CounterField'
+import InformationField from '../../components/InformationField'
 
 const worker = IFWorkerInstance()
 // var parameterString = window.location.search
