@@ -1,58 +1,78 @@
 import React from 'react'
 import {
   Col,
+  Card,
 } from 'react-bootstrap'
-import {
-  IFGrid
-} from './BaseComponents'
 import sizeMe from 'react-sizeme'
 
-function App(props) {
-  const { width, height } = props.size
-  const colNum = parseInt(width / 200)
-  const horizontalOffset = parseInt((width % 200) / 2)
+class IFGrid extends React.Component {
+  constructor(props) {
+    super(props)
+    this.width = props.width
+    this.height = props.height
+    this.children = props.children
+  }
 
-  const widths = [1500, 1024, 800, 1500, 1024, 800, 1500, 1024, 800, 1500, 1024, 800, 1500, 1024, 800,]
-  const components = widths.map(w => <Col><IFGrid key={w} style={{ left: w * 200 }}></IFGrid></Col>)
-  const arrangement = []
+  render() {
+    return (
+      <Card style={{ width: this.width, height: this.height }}>
+        <Card.Body>
+          <Card.Title>Card Title</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
+          {this.children}
+        </Card.Body>
+      </Card>
+    );
+  }
+}
+
+function flowArrangement(components, colNum) {
   let currentColNum = 0
   let currentRowNum = 0
+  const arrangedComponents = []
   for (const component of components) {
     if (currentColNum >= colNum) {
       currentColNum = 0
       currentRowNum++
     }
-    arrangement.push(<div key={currentRowNum + '-' + currentColNum} style={{ position: 'absolute', top: (200 * currentRowNum) + 'px', left: (200 * currentColNum + horizontalOffset) + 'px' }}>{component}</div>)
+    component['gridX'] = currentRowNum
+    component['gridY'] = currentColNum
+    arrangedComponents.push(component)
     currentColNum++
   }
-  // const content = arrange.map(row => <Row key={'r' + (key++)}>
-  //   {row.map(item => <Col style={{ padding: '0px' }} key={'c' + (key++)}>{item}</Col>)}
-  // </Row>)
+  return arrangedComponents
+}
 
+function ComponentsView(props) {
+  const { width } = props.size
+  const gridWidth = 200
+  const gridHeight = 200
+  const gridInset = 20
+  const colNum = parseInt(width / gridWidth)
+  const horizontalOffset = parseInt((width % gridWidth) / 2)
+
+  const demoComponentNum = 26
+  const components = []
+  for (const i of [...Array(demoComponentNum).keys()]) {
+    components.push({
+      name: 'Demo Component ' + i,
+      content: <div>{'this is component ' + i}</div>,
+      width: 1,
+      height: 1,
+    })
+  }
+  const arrangement = []
+  const arrangedComponents = flowArrangement(components, colNum, horizontalOffset)
+  for (const arrangedComponent of arrangedComponents) {
+    const ifgc = <Col><IFGrid width={arrangedComponent.width * gridWidth - gridInset} height={arrangedComponent.height * gridHeight - gridInset}>{arrangedComponent.content}</IFGrid></Col>
+    arrangement.push(<div key={arrangedComponent.name} style={{ position: 'absolute', top: arrangedComponent.gridX * gridWidth, left: arrangedComponent.gridY * gridHeight + horizontalOffset }}>{ifgc}</div>)
+  }
 
   return (
     <div>
-      {/* <Card style={{ width: (colNum * 200) + 'px' }}>
-        <Card.Body >
-          <Container fluid>
-            {content}
-          </Container>
-        </Card.Body>
-      </Card> */}
-
-      {/* {
-        components.map(c => <div key={'k' + (key)} style={{ position: 'relative', top: '100px' }}>{key++}</div>)
-      } */}
-      {/* 
-      <div key={1} style={{ position: 'absolute', top: '0px', left: '0px' }}>{components[0]}</div>
-      <div key={2} style={{ position: 'absolute', top: '0px', left: '200px' }}>{components[0]}</div>
-      <div key={3} style={{ position: 'absolute', top: '0px', left: '400px' }}>{components[0]}</div>
-      <div key={4} style={{ position: 'absolute', top: '0px', left: '600px' }}>{components[0]}</div>
-      <div key={5} style={{ position: 'absolute', top: '200px', left: '0px' }}>{components[0]}</div>
-      <div key={6} style={{ position: 'absolute', top: '200px', left: '200px' }}>{components[0]}</div> */}
       {arrangement}
     </div>
   );
 }
 
-export default sizeMe()(App)
+export default sizeMe()(ComponentsView)

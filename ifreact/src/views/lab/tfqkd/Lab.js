@@ -6,6 +6,7 @@ import {
   Col,
   Card,
   Form,
+  Button,
 } from 'react-bootstrap'
 
 const worker = IFWorkerInstance()
@@ -49,23 +50,23 @@ function Dev(props) {
   );
 }
 
-const deviceIDs = ["TF_PS_1", "TF_PS_2", "TF_PS_3"]
+const deviceIDs = ["TF_PowerSupply_Alice_1", "TF_PowerSupply_Alice_2", "TF_PowerSupply_Alice_3", "TF_PowerSupply_Alice_4", "TF_PowerSupply_Bob_1", "TF_PowerSupply_Bob_2", "TF_PowerSupply_Bob_3", "TF_PowerSupply_Bob_4"]
 const deviceDefines = {
-  "TF_PS_1": {
+  "TF_PowerSupply_Alice_1": {
     0: {
       description: "Alice 风扇电源",
-      protection: 30
+      protection: 25
     },
     1: {
       description: "Alice AWG 电源",
-      protection: 30
+      protection: 13
     },
     2: {
       description: "Alice 时钟板电源",
       protection: 6
     }
   },
-  "TF_PS_2": {
+  "TF_PowerSupply_Alice_2": {
     0: {
       description: "Alice Bias AM1",
       protection: 15
@@ -79,7 +80,7 @@ const deviceDefines = {
       protection: 6
     }
   },
-  "TF_PS_3": {
+  "TF_PowerSupply_Alice_3": {
     0: {
       description: "Alice Bias AM3",
       protection: 15
@@ -92,10 +93,95 @@ const deviceDefines = {
       description: "~",
       protection: 6
     }
-  }
+  },
+  "TF_PowerSupply_Alice_4": {
+    0: {
+      description: "Alice PM 放大器供电",
+      protection: 6
+    },
+    1: {
+      description: "Alice AM 放大器 Vbias",
+      protection: 13
+    },
+    2: {
+      description: "Alice AM 放大器 Vamp",
+      protection: 1.5
+    }
+  },
+  "TF_PowerSupply_Bob_1": {
+    0: {
+      description: "Bob AWG 电源",
+      protection: 13
+    },
+    1: {
+      description: "Bob 风扇电源",
+      protection: 25
+    },
+    2: {
+      description: "Bob 时钟板电源",
+      protection: 6
+    }
+  },
+  "TF_PowerSupply_Bob_2": {
+    0: {
+      description: "Bob PM 放大器供电",
+      protection: 6
+    },
+    1: {
+      description: "Bob AM 放大器 Vbias",
+      protection: 13
+    },
+    2: {
+      description: "Bob AM 放大器 Vamp",
+      protection: 1.5
+    }
+  },
+  "TF_PowerSupply_Bob_3": {
+    0: {
+      description: "Bob Bias AM1",
+      protection: 15
+    },
+    1: {
+      description: "Bob Bias AM2",
+      protection: 15
+    },
+    2: {
+      description: "Bob Bias Ground",
+      protection: 6
+    }
+  },
+  "TF_PowerSupply_Bob_4": {
+    0: {
+      description: "Bob Bias AM3",
+      protection: 15
+    },
+    1: {
+      description: "~",
+      protection: 30
+    },
+    2: {
+      description: "~",
+      protection: 6
+    }
+  },
 }
 
-class TDCStatus extends React.Component {
+function AWGTriggerControl(props) {
+  return (
+    <Card>
+      <Card.Header>{"AWG Trigger Control"}</Card.Header>
+      <Card.Body>
+        <Button variant="outline-primary" onClick={(e) => props.onRestartTrigger(e, 'Alice')}>Restart Trigger Alice</Button>{' '}
+        <Button variant="outline-primary" onClick={(e) => props.onRestartTrigger(e, 'Bob')}>Restart Trigger Bob</Button>{' '}
+      </Card.Body>
+      <Card.Footer>
+        <small className="text-muted">AWG 断电或 reset 后，需重发 trigger</small>
+      </Card.Footer>
+    </Card>
+  );
+}
+
+class DevStatus extends React.Component {
   constructor(props) {
     super(props);
     this.state = { devs: [] };
@@ -152,6 +238,12 @@ class TDCStatus extends React.Component {
     this.doMetaFetch()
   }
 
+  onRestartTrigger(evt, target) {
+    console.log(target)
+    let a = worker['USTCAWG_' + target].sendTrigger(0.2e-3, 60000, 0.2e-3, 60000)
+    console.log(a)
+  }
+
   render() {
     const devs = this.state.devs
     return (
@@ -163,9 +255,14 @@ class TDCStatus extends React.Component {
             </Col>
           )}
         </Row>
+        <Row>
+          <Col xs={12} sm={12} md={12} lg={12} xl={6}>
+            <AWGTriggerControl onRestartTrigger={this.onRestartTrigger}></AWGTriggerControl>
+          </Col>
+        </Row>
       </Container>
     );
   }
 }
 
-export default TDCStatus
+export default DevStatus
